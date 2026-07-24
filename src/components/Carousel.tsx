@@ -33,65 +33,62 @@ export const Carousel = ({
 
   const handleNext = () => {
     setStartIndex(current => {
-      const safeCurrent = Math.min(current, maxStartIndex);
-
-      if (infinite && safeCurrent >= maxStartIndex) {
+      if (infinite && current >= maxStartIndex) {
         return 0;
       }
 
-      return Math.min(safeCurrent + step, maxStartIndex);
+      return Math.min(current + step, maxStartIndex);
     });
   };
 
   const handlePrevious = () => {
     setStartIndex(current => {
-      const safeCurrent = Math.min(current, maxStartIndex);
-
-      if (infinite && safeCurrent === 0) {
+      if (infinite && current === 0) {
         return maxStartIndex;
       }
 
-      return Math.max(safeCurrent - step, 0);
+      return Math.max(current - step, 0);
     });
   };
-
-  const frameWidth = itemWidth * frameSize;
-  const translateDistance = currentIndex * itemWidth;
 
   return (
     <div className="Carousel">
       <div
         className="Carousel__frame"
         style={{
-          width: frameWidth,
+          width: itemWidth * frameSize,
         }}
       >
-        <div
+        <ul
           className="Carousel__list"
           style={{
-            transform: `translateX(-${translateDistance}px)`,
+            transform: `translateX(-${currentIndex * itemWidth}px)`,
             transitionDuration: `${animationDuration}ms`,
           }}
         >
           {images.map(image => (
-            <img
+            <li
               key={image}
-              className="Carousel__image"
-              src={image}
-              alt=""
+              className="Carousel__item"
               style={{
                 width: itemWidth,
               }}
-            />
+            >
+              <img
+                src={image}
+                alt=""
+                width={itemWidth}
+                className="Carousel__image"
+              />
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
 
       <div className="Carousel__buttons">
         <button
           type="button"
           data-cy="previous"
-          className="Carousel__button"
           disabled={!canMovePrevious}
           onClick={handlePrevious}
         >
@@ -101,7 +98,6 @@ export const Carousel = ({
         <button
           type="button"
           data-cy="next"
-          className="Carousel__button"
           disabled={!canMoveNext}
           onClick={handleNext}
         >
