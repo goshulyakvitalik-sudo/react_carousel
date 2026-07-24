@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './Carousel.scss';
 
 type Props = {
@@ -20,10 +20,7 @@ export const Carousel = ({
 }: Props) => {
   const [startIndex, setStartIndex] = useState(0);
 
-  const imageGap = 10;
-
   const maxStartIndex = Math.max(0, images.length - frameSize);
-
   const currentIndex = Math.min(startIndex, maxStartIndex);
 
   const canMovePrevious = infinite
@@ -35,14 +32,10 @@ export const Carousel = ({
     : currentIndex < maxStartIndex;
 
   const handleNext = () => {
-    if (!canMoveNext) {
-      return;
-    }
-
     setStartIndex(current => {
       const safeCurrent = Math.min(current, maxStartIndex);
 
-      if (infinite && safeCurrent === maxStartIndex) {
+      if (infinite && safeCurrent >= maxStartIndex) {
         return 0;
       }
 
@@ -51,10 +44,6 @@ export const Carousel = ({
   };
 
   const handlePrevious = () => {
-    if (!canMovePrevious) {
-      return;
-    }
-
     setStartIndex(current => {
       const safeCurrent = Math.min(current, maxStartIndex);
 
@@ -66,26 +55,11 @@ export const Carousel = ({
     });
   };
 
-  const frameWidth =
-    itemWidth * frameSize + imageGap * (frameSize - 1);
-
-  const translateDistance =
-    currentIndex * (itemWidth + imageGap);
+  const frameWidth = itemWidth * frameSize;
+  const translateDistance = currentIndex * itemWidth;
 
   return (
     <div className="Carousel">
-      <button
-        type="button"
-        data-cy="previous"
-        className={`Carousel__button Carousel__button--previous ${
-          !canMovePrevious ? 'disabled' : ''
-        }`}
-        disabled={!canMovePrevious}
-        onClick={handlePrevious}
-      >
-        Previous
-      </button>
-
       <div
         className="Carousel__frame"
         style={{
@@ -95,37 +69,45 @@ export const Carousel = ({
         <div
           className="Carousel__list"
           style={{
-            gap: imageGap,
             transform: `translateX(-${translateDistance}px)`,
             transitionDuration: `${animationDuration}ms`,
           }}
         >
-          {images.map((image, index) => (
+          {images.map(image => (
             <img
-              key={`${image}-${index}`}
+              key={image}
               className="Carousel__image"
               src={image}
-              alt={`Carousel item ${index + 1}`}
+              alt=""
               style={{
                 width: itemWidth,
-                height: itemWidth,
               }}
             />
           ))}
         </div>
       </div>
 
-      <button
-        type="button"
-        data-cy="next"
-        className={`Carousel__button Carousel__button--next ${
-          !canMoveNext ? 'disabled' : ''
-        }`}
-        disabled={!canMoveNext}
-        onClick={handleNext}
-      >
-        Next
-      </button>
+      <div className="Carousel__buttons">
+        <button
+          type="button"
+          data-cy="previous"
+          className="Carousel__button"
+          disabled={!canMovePrevious}
+          onClick={handlePrevious}
+        >
+          Previous
+        </button>
+
+        <button
+          type="button"
+          data-cy="next"
+          className="Carousel__button"
+          disabled={!canMoveNext}
+          onClick={handleNext}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

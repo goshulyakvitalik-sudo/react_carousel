@@ -9,11 +9,29 @@
 
   &__list {
     display: flex;
+    transition-property: transform;
+    transition-timing-function: ease;
+  }
+
+  &__image {
+    display: block;
+    flex-shrink: 0;
+    height: auto;
   }
 
   &__buttons {
-    margin-top: 20px;
     display: flex;
     gap: 10px;
+    margin-top: 20px;
+  }
+
+  &__button {
+    padding: 8px 16px;
+    cursor: pointer;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
   }
 }
